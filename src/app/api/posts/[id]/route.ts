@@ -2,14 +2,21 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '../../../../../lib/dbConnect';
 import Post from '../../../../../models/Post';
 
+// Correct context type for App Router route handlers
+interface Context {
+  params: {
+    id: string;
+  };
+}
+
 export async function DELETE(
   request: NextRequest,
-  { params }: any // Let TypeScript infer or use 'any'
+  context: Context
 ) {
   await dbConnect();
 
   try {
-    const deletedPost = await Post.findOneAndDelete({ slug: params.id });
+    const deletedPost = await Post.findOneAndDelete({ slug: context.params.id });
 
     if (!deletedPost) {
       return NextResponse.json(
@@ -33,7 +40,7 @@ export async function DELETE(
 
 export async function PUT(
   request: NextRequest,
-  { params }: any // Let TypeScript infer or use 'any'
+  context: Context
 ) {
   await dbConnect();
 
@@ -48,7 +55,7 @@ export async function PUT(
     }
 
     const updatedPost = await Post.findByIdAndUpdate(
-      params.id,
+      context.params.id,
       { title, content },
       { new: true, runValidators: true }
     );
