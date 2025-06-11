@@ -3,36 +3,30 @@ import dbConnect from '../../../../../lib/dbConnect';
 import Post from '../../../../../models/Post';
 import { NextRequest, NextResponse } from 'next/server';
 
-type RouteParams = {
-  params: {
-    id: string;
-  };
-};
-
 export async function DELETE(
-  request: Request,
-  { params }: RouteParams
+  request: NextRequest,
+  context: { params: { id: string } }
 ): Promise<NextResponse> {
   await dbConnect();
 
   try {
-    const deletedPost = await Post.findOneAndDelete({ slug: params.id });
+    const deletedPost = await Post.findOneAndDelete({ slug: context.params.id });
 
     if (!deletedPost) {
       return NextResponse.json(
-        { success: false, message: 'Post not found' }, 
+        { success: false, message: 'Post not found' },
         { status: 404 }
       );
     }
 
     return NextResponse.json(
-      { success: true, message: 'Post deleted successfully' }, 
+      { success: true, message: 'Post deleted successfully' },
       { status: 200 }
     );
   } catch (error: unknown) {
     console.error('Error deleting post:', error);
     return NextResponse.json(
-      { success: false, message: 'Failed to delete post' }, 
+      { success: false, message: 'Failed to delete post' },
       { status: 500 }
     );
   }
@@ -40,7 +34,7 @@ export async function DELETE(
 
 export async function PUT(
   request: NextRequest,
-  { params }: RouteParams
+  context: { params: { id: string } }
 ): Promise<NextResponse> {
   await dbConnect();
 
@@ -55,7 +49,7 @@ export async function PUT(
     }
 
     const updatedPost = await Post.findByIdAndUpdate(
-      params.id,
+      context.params.id,
       { title, content },
       { new: true, runValidators: true }
     );
@@ -68,7 +62,7 @@ export async function PUT(
     }
 
     return NextResponse.json(
-      { success: true, data: updatedPost }, 
+      { success: true, data: updatedPost },
       { status: 200 }
     );
   } catch (error: unknown) {
