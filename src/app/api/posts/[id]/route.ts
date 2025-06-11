@@ -1,22 +1,21 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import dbConnect from '../../../../../lib/dbConnect';
 import Post from '../../../../../models/Post';
 
-// Correct context type for App Router route handlers
-interface Context {
-  params: {
-    id: string;
-  };
-}
+// Use Next.js built-in type for route context
+type Context = {
+  params: { id: string };
+};
 
 export async function DELETE(
-  request: NextRequest,
-  context: Context
+  req: NextRequest,
+  { params }: Context
 ) {
   await dbConnect();
 
   try {
-    const deletedPost = await Post.findOneAndDelete({ slug: context.params.id });
+    const deletedPost = await Post.findOneAndDelete({ slug: params.id });
 
     if (!deletedPost) {
       return NextResponse.json(
@@ -39,13 +38,13 @@ export async function DELETE(
 }
 
 export async function PUT(
-  request: NextRequest,
-  context: Context
+  req: NextRequest,
+  { params }: Context
 ) {
   await dbConnect();
 
   try {
-    const { title, content } = await request.json();
+    const { title, content } = await req.json();
 
     if (!title?.trim() || !content?.trim()) {
       return NextResponse.json(
@@ -55,7 +54,7 @@ export async function PUT(
     }
 
     const updatedPost = await Post.findByIdAndUpdate(
-      context.params.id,
+      params.id,
       { title, content },
       { new: true, runValidators: true }
     );
