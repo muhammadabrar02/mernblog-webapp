@@ -1,16 +1,15 @@
-// src/app/api/posts/[id]/route.ts
+import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '../../../../../lib/dbConnect';
 import Post from '../../../../../models/Post';
-import { NextRequest, NextResponse } from 'next/server';
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } }
-): Promise<NextResponse> {
+  { params }: any // Let TypeScript infer or use 'any'
+) {
   await dbConnect();
 
   try {
-    const deletedPost = await Post.findOneAndDelete({ slug: context.params.id });
+    const deletedPost = await Post.findOneAndDelete({ slug: params.id });
 
     if (!deletedPost) {
       return NextResponse.json(
@@ -23,7 +22,7 @@ export async function DELETE(
       { success: true, message: 'Post deleted successfully' },
       { status: 200 }
     );
-  } catch (error: unknown) {
+  } catch (error) {
     console.error('Error deleting post:', error);
     return NextResponse.json(
       { success: false, message: 'Failed to delete post' },
@@ -34,8 +33,8 @@ export async function DELETE(
 
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } }
-): Promise<NextResponse> {
+  { params }: any // Let TypeScript infer or use 'any'
+) {
   await dbConnect();
 
   try {
@@ -49,7 +48,7 @@ export async function PUT(
     }
 
     const updatedPost = await Post.findByIdAndUpdate(
-      context.params.id,
+      params.id,
       { title, content },
       { new: true, runValidators: true }
     );
@@ -65,7 +64,7 @@ export async function PUT(
       { success: true, data: updatedPost },
       { status: 200 }
     );
-  } catch (error: unknown) {
+  } catch (error) {
     console.error('Error updating post:', error);
     return NextResponse.json(
       { success: false, error: 'Internal Server Error' },
