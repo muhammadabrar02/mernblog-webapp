@@ -1,10 +1,10 @@
-type Params = {
+interface PageProps {
   params: {
     slug: string;
   };
-};
+}
 
-export default function BlogPost({ params }: Params) {
+export default function BlogPost({ params }: PageProps) {
   return (
     <div>
       <h1 className="text-3xl font-bold">Blog Post: {params.slug}</h1>
