@@ -14,6 +14,7 @@ const BlogPost: FC<PageProps> = ({ params }) => {
       <p>This is where the blog content will be displayed.</p>
       <p>This is where the blog content will be displayed.</p>
       <p>This is where the blog content will be displayed.</p>
+      <p>This is where the blog content will be displayed.</p>
     </div>
   );
 };
