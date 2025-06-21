@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import { type Metadata } from 'next';
+// import { type Metadata } from 'next';
 
 interface PageProps {
   params: {
